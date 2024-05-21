@@ -1,0 +1,7 @@
+.HideScrollBar::-webkit-scrollbar{
+    display: none
+} 
+
+::-webkit-scrollbar {
+    width: 0; /* Hide scrollbar */
+  }
