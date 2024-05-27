@@ -2,7 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import "../Profil/ProfileModel.css";
-import LaunchIcon from '@mui/icons-material/Launch';
+import LaunchIcon from "@mui/icons-material/Launch";
 import {
   Accordion,
   AccordionDetails,
@@ -23,7 +23,13 @@ import "../RequestDetails/ProductModel.css";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import MapComponent from "../HomeSection/MapComponent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { closeRequest } from "../../Store/Request/Action";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { createChat } from "../../Store/Message/Message.action";
+import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
+import LanguageIcon from "@mui/icons-material/Language";
 
 const style = {
   position: "absolute",
@@ -40,24 +46,31 @@ const style = {
   overflow: "auto", // Add this line
 };
 
-export default function ProductModel({ open, handleClose , item , request}) {
+export default function ProductModel({ open, handleClose, item, request }) {
+  const [isRequestClosed, setIsRequestClosed] = useState(
+    request?.request?.closed || false
+  );
+  console.log("testttiiinnnnngngnngn", request?.request);
+  console.log("request hada", request?.request?.user?.id);
 
-  console.log( "testttiiinnnnngngnngn",request?.request);
-  console.log("request hada" ,  request?.request?.user?.id)
-
-
+  useEffect(() => {
+    // Check the request status and update the state
+    setIsRequestClosed(request?.request?.closed || false);
+  }, [request?.request?.closed]);
 
   console.log("Modal Open Status:", open); // Debug log
-  const [show, setShow] = useState(false);
-  const [show2, setShow2] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const dispatch = useDispatch();
+  const handleAcceptOffre = () => {
+    // Call the closeRequest action and pass the requestId
+    dispatch(closeRequest(request?.request?.id));
+    console.log("closiiiiising");
+    handleClose(); // Close the modal after accepting the offre
+  };
   const [value, setValue] = React.useState("1");
-  const CustomPrevArrow = (props) => <></>;
-  const CustomNextArrow = (props) => <></>;
-  console.log(item , "helloooooooooo")
-  const auth = useSelector((store) => store.auth);
-  console.log("nta hada" ,  auth?.user?.id)
 
+  console.log(item, "helloooooooooo");
+  const auth = useSelector((store) => store.auth);
+  console.log("nta hada", auth?.user?.id);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -68,22 +81,11 @@ export default function ProductModel({ open, handleClose , item , request}) {
     border: `2px solid ${theme.palette.background.paper}`,
   }));
 
-  const settings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    beforeChange: (oldIndex, newIndex) => setCurrentSlide(newIndex),
-    prevArrow: <CustomPrevArrow />,
-    nextArrow: <CustomNextArrow />,
-  };
-
-
-  const sliderRef = React.useRef(null);
-
-  const handleThumbnailClick = (index) => {
-    sliderRef.current.slickGoTo(index);
+  const navigate = useNavigate();
+  const handleStartConversation = () => {
+    navigate("/messages");
+    console.log("mol offre", item?.user?.fullName);
+    dispatch(createChat({ userId: item?.user?.id }));
   };
 
   return (
@@ -114,9 +116,7 @@ export default function ProductModel({ open, handleClose , item , request}) {
             <div className="w-1/2  mr-8">
               <div className="w-full flex flex-col">
                 <div className="flex justify-start flex-row mb-6">
-                  <div
-                    className="product-slider w-full h-full"
-                  >
+                  <div className="product-slider w-full h-full">
                     {
                       <div className="h-full">
                         <img
@@ -141,24 +141,35 @@ export default function ProductModel({ open, handleClose , item , request}) {
                           backgroundColor: "#7c3aed", // Set the indicator color
                         },
                       }}
-                     
                     >
-                      <Tab label="terms and conditions " value="1"   />
+                      <Tab label="terms and conditions " value="1" />
 
-                      <Tab label="Contact information" value="2"  />
+                      <Tab label="Contact information" value="2" />
                     </TabList>
                   </Box>
-                  <TabPanel value="1">terms and conditions</TabPanel>
+                  <TabPanel value="1" className="text-white w-full break-words whitespace-normal">{item?.user?.termsAndService}</TabPanel>
                   <TabPanel value="2">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Suspendisse malesuada lacus ex, sit amet blandit leo
-                    lobortis eget.
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Suspendisse malesuada lacus ex, sit amet blandit leo
-                    lobortis eget.
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Suspendisse malesuada lacus ex, sit amet blandit leo
-                    lobortis eget.
+                    <div class="flex flex-col justify-center space-y-3">
+                     {item?.user?.facebook &&<button class="bg-blue-500 px-4 py-2 font-semibold text-white inline-flex items-center space-x-2 rounded">
+                        <svg
+                          class="w-5 h-5 fill-current"
+                          role="img"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                        </svg>
+                        <span>Facebook</span>
+                      </button>}
+                     { item?.user?.website && <button class="bg-blue-300 px-4 py-2 font-semibold text-white inline-flex items-center space-x-2 rounded">
+                        <LanguageIcon />
+                        <span>web site</span>
+                      </button>}
+                      {item?.user?.phoneNumber && <button class="bg-pink-600 px-4 py-2 font-semibold text-white inline-flex items-center space-x-2 rounded">
+                        <LocalPhoneIcon />
+                        <span>{item?.user?.phoneNumber}</span>
+                      </button>}
+                    </div>
                   </TabPanel>
                 </TabContext>
               </div>
@@ -185,56 +196,56 @@ export default function ProductModel({ open, handleClose , item , request}) {
                     padding: 0, // Remove padding
                     boxShadow: "none",
                     bgcolor: "#1E293B",
-                    width:"100%",
-                    color:"#fff",
+                    width: "100%",
+                    color: "#fff",
                     "&:before": {
                       display: "none",
                       padding: 0,
                     },
                     "&.Mui-expanded": {
                       margin: 0,
-                    
                     },
                   }}
                 >
                   <AccordionSummary
-                    expandIcon={<ExpandMoreIcon sx={{ color: '#7c3aed' }}/>}
+                    expandIcon={<ExpandMoreIcon sx={{ color: "#7c3aed" }} />}
                     aria-controls="panel1-content"
                     id="panel1-header"
                   >
-                    <Typography className="w-full">Product description</Typography>
+                    <Typography className="w-full">
+                      Product description
+                    </Typography>
                   </AccordionSummary>
-                  <AccordionDetails> 
-                    <p className="font-bold break-words">
-                     {item?.content}
-                    </p>
+                  <AccordionDetails>
+                    <p className="font-bold break-words">{item?.content}</p>
                   </AccordionDetails>
                 </Accordion>
               </div>
 
               <div className="mb-4 text-white">
-                <p className="text-base leading-4 mt-7">
-                  Price : 33 $
-                </p>
+                <p className="text-base leading-4 mt-7">Price : 33 $</p>
                 <p className="text-base leading-4 mt-4 underline text-[#7c3aed] mb-4">
-                  <a href={item?.link}>view more inforamtion about product <LaunchIcon className="text-[#7c3aed]"/> </a>
+                  <a href={item?.link}>
+                    view more inforamtion about product{" "}
+                    <LaunchIcon className="text-[#7c3aed]" />{" "}
+                  </a>
                 </p>
                 <div className="App">
-                  <MapComponent 
-                    latitude={item?.latitude} 
-                    longitude={item?.longitude} 
-                    latitude2={request?.request?.latitude} 
-                    longitude2={request?.request?.longitude} 
+                  <MapComponent
+                    latitude={item?.latitude}
+                    longitude={item?.longitude}
+                    latitude2={request?.request?.latitude}
+                    longitude2={request?.request?.longitude}
                   />
+                </div>
               </div>
-              </div>
-     
             </div>
           </div>
-          {(auth?.user?.id === request?.request?.user?.id) ? 
-          (<div className="w-full flex px-4">
-            <button
-              className="
+          {auth?.user?.id === request?.request?.user?.id ? (
+            <div className="w-full flex px-4 justify-end">
+              <button
+                onClick={handleStartConversation}
+                className="
 						text-base
 						flex
 						items-center
@@ -247,28 +258,48 @@ export default function ProductModel({ open, handleClose , item , request}) {
 						py-4
 						hover:bg-gray-700
 					"
-            >
-              Start a conversation
-            </button>
-            <button
-              className="
-						
-						text-base
-						flex
-						items-center
-						justify-center
-						leading-none
-						text-white
-						bg-slate-800
-						w-1/2
-						py-4
-						hover:bg-gray-700
-					"
-            >
-              Accept the offre 
-            </button>
-          
-          </div>) : null}
+              >
+                Start a conversation
+              </button>
+              {!isRequestClosed ? (
+                <button
+                  onClick={handleAcceptOffre}
+                  className="
+             text-base
+             flex
+             items-center
+             justify-center
+             leading-none
+             text-white
+             bg-slate-800
+             w-1/2
+             py-4
+             hover:bg-gray-700
+           "
+                >
+                  Accept the offre
+                </button>
+              ) : (
+                <button
+                  className="
+              
+              text-base
+              flex
+              items-center
+              justify-center
+              leading-none
+              text-white
+              bg-red-700
+              w-1/2
+              py-4
+              hover:bg-red-800
+            "
+                >
+                  Request has been closed
+                </button>
+              )}
+            </div>
+          ) : null}
         </Box>
       </Modal>
     </div>

@@ -30,7 +30,7 @@ export const navigationMenu = [
     {
         title:"Requests",
         icon : <ListAltIcon/>,
-        path : "/lists"
+        path : "/Requests"
     },
     {
         title:"Transaction",

@@ -57,6 +57,7 @@ export default function ProfileModel({ open, handleClose }) {
     setselectedImage(file);
     setUploading(false);
   };
+  
 
   return (
     <div className="scrol">

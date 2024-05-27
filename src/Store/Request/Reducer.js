@@ -1,4 +1,6 @@
 import {
+  CLOSE_REQUEST_FAILURE,
+  CLOSE_REQUEST_SUCCESS,
   FIND_REQUEST_BY_ID_FAILURE,
   FIND_REQUEST_BY_ID_REQUEST,
   FIND_REQUEST_BY_ID_SUCCESS,
@@ -51,53 +53,83 @@ export const requestReducer = (state = intialState, action) => {
         ...state,
         loading: false,
         error: null,
-        data: action.payload, // added by me for testing , back here if tou have refresh problem or data problem 
+        data: action.payload, // added by me for testing , back here if tou have refresh problem or data problem
         requests: [action.payload, ...state.requests],
       };
     case GET_ALL_REQUESTS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        requests: action.payload,
+      };
     case GET_USERS_REQUEST_SUCCESS:
-        return {
-            ...state,
-            loading: false,
-            error: null,
-            requests: action.payload,
-          };
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        requests: action.payload,
+      };
     case USER_LIKE_REQUEST_SUCCESS:
-                    return {
-                        ...state,
-                        loading: false,
-                        error: action.payload,
-                        likedRequests: action.payload,
-                    };
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        likedRequests: action.payload,
+      };
     case LIKE_REQUEST_SUCCESS:
-                    return {
-                            ...state,
-                            loading: false,
-                            error: null, // null is by me : it was : action.payload befor
-                            like: action.payload,
-                        };   
+      return {
+        ...state,
+        loading: false,
+        error: null, // null is by me : it was : action.payload befor
+        like: action.payload,
+      };
     case REQUEST_DELETE_SUCCESS:
-                            return {
-                                    ...state,
-                                    loading: false,
-                                    error: action.payload,
-                                    requests: state.requests.filter((request) => request.id!==action.payload),
-                                };   
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        requests: state.requests.filter(
+          (request) => request.id !== action.payload
+        ),
+      };
     case REQUEST_COPY_SUCCESS:
-                            return {
-                                    ...state,
-                                    loading: false,
-                                    error: action.payload,
-                                    copyRequest: action.payload
-                                };   
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        copyRequest: action.payload,
+      };
     case FIND_REQUEST_BY_ID_SUCCESS:
     case OFFRE_SUCCESS:
-                            return {
-                                    ...state,
-                                    loading: false,
-                                    error: action.payload,
-                                    request: action.payload
-                                };   
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        request: action.payload,
+      };
+      case CLOSE_REQUEST_SUCCESS:
+        // Update both the individual request and the list of requests
+        const updatedRequests = state.requests.map((request) =>
+          request.id === action.payload ? { ...request, closed: true } : request
+        );
+        const updatedRequest = state.request && state.request.id === action.payload
+          ? { ...state.request, closed: true }
+          : state.request;
+  
+        return {
+          ...state,
+          loading: false,
+          error: null,
+          requests: updatedRequests,
+          request: updatedRequest,
+        };
+      case CLOSE_REQUEST_FAILURE:
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+        };
 
     default:
       return state;

@@ -1,7 +1,9 @@
 import axios from "axios"
 import { API_BASE_URL, api } from "../../Config/api"
-import {FIND_USER_BY_ID_SUCCESS, FOLLOW_USER_FAILURE, FOLLOW_USER_SUCCESS, GET_USER_PROFILE_FAILURE, GET_USER_PROFILE_SUCCESS, LOGIN_USER_FAILURE, LOGIN_USER_SUCCESS , LOGOUT_USER_FAILURE, LOGOUT_USER_SUCCESS, REGISTER_USER_FAILURE, REGISTER_USER_SUCCESS, UPDATE_USER_PROFILE_FAILURE, UPDATE_USER_PROFILE_SUCCESS} from "./ActionType"
+import {FIND_USER_BY_ID_SUCCESS, FOLLOW_USER_FAILURE, FOLLOW_USER_SUCCESS, GET_USER_PROFILE_FAILURE, GET_USER_PROFILE_SUCCESS, LOGIN_USER_FAILURE, LOGIN_USER_SUCCESS , LOGOUT_USER_FAILURE, LOGOUT_USER_SUCCESS, REGISTER_USER_FAILURE, REGISTER_USER_SUCCESS, SEARCH_USER_FAILURE, SEARCH_USER_REQUEST, SEARCH_USER_SUCCESS, UPDATE_USER_PROFILE_FAILURE, UPDATE_USER_PROFILE_SUCCESS, UPDATE_USER_PRO_FAILURE} from "./ActionType"
 import { FIND_REQUEST_BY_ID_FAILURE } from "../Request/ActionType"
+
+
 
 
 export const loginUser=(loginData) => async(disaptch) =>{
@@ -91,15 +93,46 @@ export const updateUserProfile=(reqData) => async(disaptch) =>{
         
     }
 }
+
+export const updateUserPro=(reqData) => async(disaptch) =>{
+    console.log("raniiiiii f updateUserPro")
+    try {
+        const {data} = await api.put(`${API_BASE_URL}/api/appUser/update/pro`, reqData)
+        console.log("Pro userrrr" , data)
+        disaptch({type:UPDATE_USER_PROFILE_SUCCESS, payload : data})
+    } catch (error) {
+
+        console.log("error" , error)
+        disaptch({type : UPDATE_USER_PRO_FAILURE, payload : error.message })
+        
+    }
+}
+
+
 export const FollowUser=(userId) => async(disaptch) =>{
     try {
         const {data} = await api.put(`${API_BASE_URL}/api/appUser/${userId}/follow`)
-        console .log("follow user" , data)
+        console.log("follow user" , data)
         disaptch({type:FOLLOW_USER_SUCCESS, payload : data})
     } catch (error) {
 
         console.log("error" , error)
         disaptch({type :FOLLOW_USER_FAILURE, payload : error.message })
         
+    }
+}
+//update profile ,get profile ...
+//implement seach user logic
+export const searchAppUser=(query)=>async(dispatch)=>{
+    dispatch({type:SEARCH_USER_REQUEST})
+    try{
+      const {data}=await api.get(`/api/appUser/search?query=${query}`);
+      console.log("search user",data)
+      dispatch({type:SEARCH_USER_SUCCESS,payload:data})
+    }catch(error){
+        console.log("-----",error)
+         dispatch({type:SEARCH_USER_FAILURE,
+            payload:error,
+         });
     }
 }

@@ -1,6 +1,5 @@
-
 import { api } from "../../Config/api"
-import {GET_ALL_REQUESTS_FAILURE  , GET_USERS_REQUEST_FAILURE, USER_LIKE_REQUEST_FAILURE, USER_LIKE_REQUEST_SUCCESS, GET_USERS_REQUEST_SUCCESS, FIND_REQUEST_BY_ID_SUCCESS, FIND_REQUEST_BY_ID_FAILURE, REQUEST_CREATE_SUCCESS, REQUEST_CREATE_FAILURE, OFFRE_SUCCESS, OFFRE_FAILURE, REQUEST_COPY_SUCCESS, REQUEST_COPY_FAILURE, REQUEST_DELETE_FAILURE, REQUEST_DELETE_SUCCESS, GET_ALL_REQUESTS_SUCCESS, LIKE_REQUEST_SUCCESS, LIKE_REQUEST_FAILURE} from "./ActionType"
+import {GET_ALL_REQUESTS_FAILURE  , GET_USERS_REQUEST_FAILURE, USER_LIKE_REQUEST_FAILURE, USER_LIKE_REQUEST_SUCCESS, GET_USERS_REQUEST_SUCCESS, FIND_REQUEST_BY_ID_SUCCESS, FIND_REQUEST_BY_ID_FAILURE, REQUEST_CREATE_SUCCESS, REQUEST_CREATE_FAILURE, OFFRE_SUCCESS, OFFRE_FAILURE, REQUEST_COPY_SUCCESS, REQUEST_COPY_FAILURE, REQUEST_DELETE_FAILURE, REQUEST_DELETE_SUCCESS, GET_ALL_REQUESTS_SUCCESS, LIKE_REQUEST_SUCCESS, LIKE_REQUEST_FAILURE, CLOSE_REQUEST_SUCCESS, CLOSE_REQUEST_FAILURE} from "./ActionType"
 
 export const getAllRequests=()=>async (dispatch) =>{
     try {
@@ -17,8 +16,10 @@ export const getAllRequests=()=>async (dispatch) =>{
 export const getUsersRequests=(userId)=>async (dispatch) =>{
     try {
         const {data} = await api.get(`/api/request/Appuser/${userId}`)
-        console.log("get user requests")
+        console.log("get user requests daba  daba daba" ,  userId)
+        console.log("hna 5ess ikoun request ta3 user wa7ed",data)
         dispatch({type:GET_USERS_REQUEST_SUCCESS,payload : data })
+
         
     } catch (error) {
         console.log("catch error")
@@ -104,3 +105,20 @@ export const deleteRequest=(requestId)=>async (dispatch) =>{
         dispatch({type:REQUEST_DELETE_FAILURE , payload : error.message})
     }
 }
+
+export const closeRequest = (requestId) => async (dispatch) => {
+    try {
+      const response = await api.put(`/api/request/${requestId}/close`);
+      console.log("Request closed successfully", response.data);
+      dispatch({
+        type: CLOSE_REQUEST_SUCCESS,
+        payload: requestId,
+      });
+    } catch (error) {
+      console.error("Error closing request", error);
+      dispatch({
+        type: CLOSE_REQUEST_FAILURE,
+        payload: error.message,
+      });
+    }
+  };

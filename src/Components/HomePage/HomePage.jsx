@@ -6,6 +6,9 @@ import RightPart from "../RightPart/RightPart";
 import Profile from "../Profil/Profile";
 import RequestDetails from "../RequestDetails/RequestDetails"
 import { Routes, Route } from 'react-router-dom';
+import MyRequests from "../MyRequests/MyRequests";
+import Message from "../Message/Messages";
+
 
 const HomePage = () => {
   return (
@@ -19,6 +22,10 @@ const HomePage = () => {
             <Route path="/home" element={<HomeSection/>}></Route>
             <Route path="/Profile/:id" element={<Profile/>}></Route>
             <Route path="/Request/:id" element={<RequestDetails/>}></Route>
+            <Route path="/messages" element={<Message/>}></Route>
+            <Route path="/Requests"  element={<MyRequests/>}></Route>
+            
+            
         </Routes>
       </Grid>
       {/* <Grid item xs={0} lg={2} className="lg:block w-full relative pl-4">

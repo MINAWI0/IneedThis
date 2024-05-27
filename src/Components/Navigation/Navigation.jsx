@@ -12,6 +12,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from "../../Store/Auth/Action";
+import { useLocation } from "react-router-dom";
 // :::::::::::::::::::::::::::::::::::::::::::::::::::
 const Navigation = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -32,39 +33,42 @@ const Navigation = () => {
     handleClose();
   };
   const navigate = useNavigate();
+  const location = useLocation();
+
+const handleNavigation = (path) => {
+  const targetPath = path === "Profile" ? `/profile/${auth?.user.id}` : path;
+  if (location.pathname !== targetPath) {
+    navigate(targetPath);
+  }
+};
+
   return (
     <div className="max-h-screen sticky top-0 ">
       <div className="py-5">
         <img src={logo} alt="image1" height="60px" width="60px" />
       </div>
       {(auth?.user?.seller) ? (<div className="space-y-3">
-        {navigationMenuSeller.map((item) => (
-          <div
-            className="cursor-pointer flex space-x-3 items-center"
-            onClick={() =>
-              item.title === "Profile"
-                ? navigate(`/profile/${auth?.user.id}`)
-                : navigate(item.path)
-            }
-          >
-            {item.icon}
-            <p className="text-xl">{item.title}</p>
-          </div>
-        ))}
+      {navigationMenuSeller.map((item) => (
+  <div
+    key={item.title}
+    className="cursor-pointer flex space-x-3 items-center"
+    onClick={() => handleNavigation(item.title === "Profile" ? `/profile/${auth?.user.id}` : item.path)}
+  >
+    {item.icon}
+    <p className="text-xl">{item.title}</p>
+  </div>
+))}
       </div>) : (<div className="space-y-3">
-        {navigationMenu.map((item) => (
-          <div
-            className="cursor-pointer flex space-x-3 items-center"
-            onClick={() =>
-              item.title === "Profile"
-                ? navigate(`/profile/${auth?.user.id}`)
-                : navigate(item.path)
-            }
-          >
-            {item.icon}
-            <p className="text-xl">{item.title}</p>
-          </div>
-        ))}
+      {navigationMenu.map((item) => (
+  <div
+    key={item.title}
+    className="cursor-pointer flex space-x-3 items-center"
+    onClick={() => handleNavigation(item.title === "Profile" ? `/profile/${auth?.user.id}` : item.path)}
+  >
+    {item.icon}
+    <p className="text-xl">{item.title}</p>
+  </div>
+))}
       </div>)}
       
       <div className="py-5">

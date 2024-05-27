@@ -127,10 +127,13 @@ export default function RequestModel({ handleClose, open, item }) {
   const auth = useSelector((store) => store.auth);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [selectImage, setSelectedImage] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const dispatch = useDispatch();
   const { request } = useSelector((store) => store);
 
   const handleSubmit = async (values, actions) => {
+    setLoading(true);
     const submitValues = {
       ...values,
       latitude,
@@ -138,8 +141,11 @@ export default function RequestModel({ handleClose, open, item }) {
     };
     dispatch(createRequest(submitValues));
     actions.resetForm();
-    console.log("values of formmmmmmmmmmmm", submitValues);
+    console.log("values of formmmmmmmmmmmm is thissss", submitValues);
     setSelectedImage(null);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000); 
   };
 
   const formik = useFormik({
@@ -151,6 +157,7 @@ export default function RequestModel({ handleClose, open, item }) {
       maxPrice: "",
       latitude: null,
       longitude: null,
+      id: auth.user.id,
       requestType: true,
     },
     onSubmit: handleSubmit,
@@ -167,6 +174,7 @@ export default function RequestModel({ handleClose, open, item }) {
     setUploadingImage(false);
   };
 
+
   return (
     <div>
       <Modal
@@ -178,11 +186,12 @@ export default function RequestModel({ handleClose, open, item }) {
       >
         <Box sx={style}>
           <div className="flex space-x-5 mb-2">
-            <Avatar className="cursor-pointer" alt="me" src={AvatarImg} />
+            <Avatar className="cursor-pointer" alt="me" src={auth?.user?.image} />
             <div className="w-full flex items-center">
               <div className="flex justify-between items-center">
                 <div className="flex cursor-pointer items-center space-x-2 ">
-                  <div className="font-semibold">{auth.user?.fullName}</div>
+                  <div className="font-semibold mr-[470px]">{auth.user?.fullName} </div>
+                   <span className="text-purple-600">in the process of making a request</span> 
                 </div>
               </div>
             </div>
@@ -362,7 +371,7 @@ export default function RequestModel({ handleClose, open, item }) {
                         variant="contained"
                         type="submit"
                       >
-                        Request Product
+                        {loading ? <RestartAltIcon className="animate-spin" /> : "Request Product"}
                       </Button>
                     </div>
                   </div>
