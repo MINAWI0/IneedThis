@@ -1,6 +1,6 @@
 import React from "react";
 import RepeatIcon from "@mui/icons-material/Repeat";
-import { Avatar, Button, Menu, MenuItem } from "@mui/material";
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Menu, MenuItem } from "@mui/material";
 import AvatarImg from "../../recources/avatar.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -11,9 +11,10 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { LikeRequest, copyRequest } from "../../Store/Request/Action";
+import { LikeRequest, copyRequest, deleteRequest } from "../../Store/Request/Action";
 import { formatDistanceToNow, parseISO } from "date-fns";
-import CheckIcon from '@mui/icons-material/Check';
+import CheckIcon from "@mui/icons-material/Check";
+import PaidIcon from '@mui/icons-material/Paid';
 
 const RequestCard = ({ item }) => {
   const auth = useSelector((store) => store.auth);
@@ -37,10 +38,7 @@ const RequestCard = ({ item }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleDeleteRequest = () => {
-    console.log("request has benn deleted");
-    handleClose();
-  };
+  
 
   const handeCreatCopyRequest = () => {
     dispatch(copyRequest(item?.id));
@@ -61,6 +59,37 @@ const RequestCard = ({ item }) => {
   const currentPath = location.pathname;
   // Construct the intended destination path
   const destinationPath = `/Request/${item?.id}`;
+  // const handleDeleteRequest = () => {
+  //   console.log("request has benn deleted");
+  //   dispatch(deleteRequest(item?.id));
+  //   handleClose();
+  // };
+  // dialoog
+  const [openDialog, setOpenDialog] = useState(false);
+const [requestIdToDelete, setRequestIdToDelete] = useState(null);
+
+const handleClickOpenDialog = (event, requestId) => {
+  event.stopPropagation();
+  setRequestIdToDelete(requestId);
+  setOpenDialog(true);
+};
+
+const handleCloseDialog = () => {
+  setOpenDialog(false);
+  setRequestIdToDelete(null);
+};
+
+const handleConfirmDelete = () => {
+  dispatch(deleteRequest(requestIdToDelete));
+  setOpenDialog(false);
+};
+const handleDeleteRequest = (event) => {
+  event.stopPropagation();
+  handleClickOpenDialog(event, item?.id);
+};
+
+  
+  
 
   return (
     <React.Fragment>
@@ -141,68 +170,68 @@ const RequestCard = ({ item }) => {
             </div>
             {!(currentPath !== destinationPath) ? (
               <div>
-              <div className="py-4 flex flex-wrap mb-2 justify-start items-center bg-blue-700">
-                additional info
+                <div class="flex bg-blue-100 rounded-s p-4 mb-4">
+                <PaidIcon className="text-blue-700" />
+                  <p class="ml-3 text-sm text-blue-700">
+                    <span class="font-medium"> Budget is : {item?.maxPrice}  $ </span> 
+                  </p>
+                </div>
               </div>
-              <div class="flex items-center text-gray-900 dark:text-gray-100"> budget :  {item?.maxPrice}
-          <svg class="h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-          </svg>
-        </div>
-              </div>
-              
             ) : null}
 
-            {!item?.closed ? <div className="py-4 flex flex-wrap justify-start items-center bg-blue-700">
-              <div className=" flex pb-3 px-1 rounded-3xl ">
-                {auth.user.seller ? (
-                  <div className="space-x-3 p-2 flex  items-center text-gray-800 mr-2	">
-                    <AddCommentIcon
-                      className="cursor-pointer"
-                      onClick={handelOpenResponseModel}
-                    />
-                    <p>{item?.totalReplies}</p>
-                  </div>
-                ) : null}
+            {!item?.closed ? (
+              <div className="py-4 flex flex-wrap justify-start items-center">
+                <div className=" flex pb-3 px-1 rounded-3xl ">
+                  {auth.user.seller ? (
+                    <div className="space-x-3 p-2 flex  items-center text-gray-800 mr-2	">
+                      <AddCommentIcon
+                        className="cursor-pointer"
+                        onClick={handelOpenResponseModel}
+                      />
+                      <p>{item?.totalReplies}</p>
+                    </div>
+                  ) : null}
 
-                <div
-                  className={`${
-                    item?.liked ? "text-[#7c3Aed]" : "text-gray-800"
-                  } space-x-3 flex items-center mr-2`}
-                >
-                  {item?.liked ? (
-                    <FavoriteIcon
-                      className="cursor-pointer"
-                      onClick={handelLikeRequest}
-                    />
-                  ) : (
-                    <FavoriteBorderIcon
-                      className="cursor-pointer"
-                      onClick={handelLikeRequest}
-                    />
-                  )}
-
-                  <p>{item?.totalLikes}</p>
-                </div>
-                {!auth.user.seller ? (
                   <div
                     className={`${
-                      item?.reRequest ? "text-[#7c3Aed]" : "text-gray-800"
+                      item?.liked ? "text-[#7c3Aed]" : "text-gray-800"
                     } space-x-3 flex items-center mr-2`}
                   >
-                    <RepeatIcon
-                      className="cursor-pointer"
-                      onClick={handeCreatCopyRequest}
-                    />
-                    <p>{item?.totalReRequests}</p>
+                    {item?.liked ? (
+                      <FavoriteIcon
+                        className="cursor-pointer"
+                        onClick={handelLikeRequest}
+                      />
+                    ) : (
+                      <FavoriteBorderIcon
+                        className="cursor-pointer"
+                        onClick={handelLikeRequest}
+                      />
+                    )}
+
+                    <p>{item?.totalLikes}</p>
                   </div>
-                ) : null}
+                  {!auth.user.seller ? (
+                    <div
+                      className={`${
+                        item?.reRequest ? "text-[#7c3Aed]" : "text-gray-800"
+                      } space-x-3 flex items-center mr-2`}
+                    >
+                      <RepeatIcon
+                        className="cursor-pointer"
+                        onClick={handeCreatCopyRequest}
+                      />
+                      <p>{item?.totalReRequests}</p>
+                    </div>
+                  ) : null}
+                </div>
               </div>
-            </div> :  <span class="inline-flex items-center my-2 px-3 py-1 bg-green-200 hover:bg-green-300 rounded-s text-sm font-semibold text-green-600 w-full">
-            <CheckIcon/>
-              <span class="ml-1">request has been closed</span>
-            </span> }
-           
+            ) : (
+              <span class="inline-flex items-center my-2 px-3 py-1 bg-green-200 hover:bg-green-300 rounded-s text-sm font-semibold text-green-600 w-full">
+                <CheckIcon />
+                <span class="ml-1">request has been closed by the owner</span>
+              </span>
+            )}
           </div>
         </div>
         <section>
@@ -213,6 +242,27 @@ const RequestCard = ({ item }) => {
           />
         </section>
       </div>
+      <Dialog
+  open={openDialog}
+  onClose={handleCloseDialog}
+  aria-labelledby="alert-dialog-title"
+  aria-describedby="alert-dialog-description"
+>
+  <DialogTitle id="alert-dialog-title">{"Delete Request"}</DialogTitle>
+  <DialogContent>
+    <DialogContentText id="alert-dialog-description">
+      Are you sure you want to delete this request? This action cannot be undone.
+    </DialogContentText>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseDialog} color="primary">
+      Cancel
+    </Button>
+    <Button onClick={handleConfirmDelete} color="secondary" autoFocus>
+      Delete
+    </Button>
+  </DialogActions>
+</Dialog>
     </React.Fragment>
   );
 };

@@ -62,7 +62,7 @@ export default function ProductModel({ open, handleClose, item, request }) {
   const dispatch = useDispatch();
   const handleAcceptOffre = () => {
     // Call the closeRequest action and pass the requestId
-    dispatch(closeRequest(request?.request?.id));
+    dispatch(closeRequest(request?.request?.id , item?.user?.id ));
     console.log("closiiiiising");
     handleClose(); // Close the modal after accepting the offre
   };
@@ -147,10 +147,14 @@ export default function ProductModel({ open, handleClose, item, request }) {
                       <Tab label="Contact information" value="2" />
                     </TabList>
                   </Box>
-                  <TabPanel value="1" className="text-white w-full break-words whitespace-normal">{item?.user?.termsAndService}</TabPanel>
+                  {item?.user?.termsAndService ? <TabPanel value="1" className="text-white w-full break-words whitespace-normal">{item?.user?.termsAndService}</TabPanel> : 
+                  <TabPanel value="1" className="text-white w-full break-words whitespace-normal">{item?.user?.fullName} did not mentioned any terms and service</TabPanel>
+                }
+                  
                   <TabPanel value="2">
                     <div class="flex flex-col justify-center space-y-3">
-                     {item?.user?.facebook &&<button class="bg-blue-500 px-4 py-2 font-semibold text-white inline-flex items-center space-x-2 rounded">
+  
+                     {item?.user?.facebook &&<a href={item?.user?.facebook } arget="_blank" class="bg-blue-500 px-4 py-2 font-semibold text-white inline-flex items-center space-x-2 rounded">
                         <svg
                           class="w-5 h-5 fill-current"
                           role="img"
@@ -160,11 +164,11 @@ export default function ProductModel({ open, handleClose, item, request }) {
                           <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                         </svg>
                         <span>Facebook</span>
-                      </button>}
-                     { item?.user?.website && <button class="bg-blue-300 px-4 py-2 font-semibold text-white inline-flex items-center space-x-2 rounded">
+                      </a>}
+                     { item?.user?.website && <a href={item?.user?.website } arget="_blank" class="bg-blue-300 px-4 py-2 font-semibold text-white inline-flex items-center space-x-2 rounded">
                         <LanguageIcon />
                         <span>web site</span>
-                      </button>}
+                      </a>}
                       {item?.user?.phoneNumber && <button class="bg-pink-600 px-4 py-2 font-semibold text-white inline-flex items-center space-x-2 rounded">
                         <LocalPhoneIcon />
                         <span>{item?.user?.phoneNumber}</span>

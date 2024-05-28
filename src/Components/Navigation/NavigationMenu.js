@@ -17,11 +17,11 @@ export const navigationMenu = [
         icon : <HomeIcon/>,
         path : "/home"
     },
-    {
-        title:"Notifications",
-        icon : <NotificationsIcon/>,
-        path : "/notifications"
-    },
+    // {
+    //     title:"Notifications",
+    //     icon : <NotificationsIcon/>,
+    //     path : "/notifications"
+    // },
     {
         title:"Messages",
         icon : <MessageIcon/>,

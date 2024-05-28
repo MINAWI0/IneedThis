@@ -51,6 +51,7 @@ export default function ResponseModel({ handleClose, open, item }) {
     handleClose();
     dispatch(createOffre(values));
     console.log("handel Response", values);
+    handleClose();
   };
   const [uploadingImage, setUploadingImage] = useState(false);
   const [selectImage, setSelectedImage] = useState("");
@@ -126,12 +127,12 @@ const [longitude, setLongitude] = useState(null);
               <div className="container mx-auto">
       <div className="card  rounded-lg shadow w-full">
         <div className="flex">
-          <div className="border-2 border-solid border-purple-950 bg-slate-950 rounded">
-            <img src={item?.image} alt="Card " className="w-24 h-24 " />
+          <div className="border-2 border-solid border-purple-950 bg-slate-950 rounded w-24 h-24">
+            <img src={item?.image} alt="Card " className="w-full h-full" />
           </div>
-          <div className="card-description ml-5 bg-slate-950 w-3/4 px-2 bg-opacity-45 rounded">
-            <h3 className="text-2xl font-bold mb-1 text-gray-50">request summary</h3>
-            <p className="text-gray-100">{item?.content}</p>
+          <div className="card-description ml-5 bg-slate-950 w-3/4 px-2 bg-opacity-45 rounded ">
+          <h3 className="text-2xl font-bold mb-1 text-gray-50">request summary</h3>
+            <p className="text-gray-100 break-words py-2">{item?.content}</p>
           </div>
         </div>
       </div>

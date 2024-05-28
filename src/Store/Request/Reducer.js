@@ -5,6 +5,9 @@ import {
   FIND_REQUEST_BY_ID_REQUEST,
   FIND_REQUEST_BY_ID_SUCCESS,
   GET_ALL_REQUESTS_SUCCESS,
+  GET_CLOSED_REQUESTS_FAILURE,
+  GET_CLOSED_REQUESTS_REQUEST,
+  GET_CLOSED_REQUESTS_SUCCESS,
   GET_USERS_REQUEST_SUCCESS,
   LIKE_REQUEST_FAILURE,
   LIKE_REQUEST_REQUEST,
@@ -30,6 +33,8 @@ const intialState = {
   error: null,
   requests: [],
   request: null,
+  closedRequests: [], // Add this line
+
 };
 
 export const requestReducer = (state = intialState, action) => {
@@ -40,6 +45,7 @@ export const requestReducer = (state = intialState, action) => {
     case LIKE_REQUEST_REQUEST:
     case REQUEST_COPY_REQUEST:
     case FIND_REQUEST_BY_ID_REQUEST:
+    case GET_CLOSED_REQUESTS_REQUEST:
       return { ...state, loading: true, error: null };
     case REQUEST_CREATE_FAILURE:
     case REQUEST_DELETE_FAILURE:
@@ -130,6 +136,19 @@ export const requestReducer = (state = intialState, action) => {
           loading: false,
           error: action.payload,
         };
+        case GET_CLOSED_REQUESTS_SUCCESS:
+          return {
+            ...state,
+            loading: false,
+            error: null,
+            closedRequests: action.payload,
+          };
+        case GET_CLOSED_REQUESTS_FAILURE:
+          return {
+            ...state,
+            loading: false,
+            error: action.payload,
+          };
 
     default:
       return state;

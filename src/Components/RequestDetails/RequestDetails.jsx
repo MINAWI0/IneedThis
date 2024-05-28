@@ -16,6 +16,7 @@ const RequestDetails = ()=>{
     const dispatch = useDispatch();
     const  {id} = useParams();
     const request =  useSelector(store => store.request)
+    console.log("request from details ------> " , request)
   
 
 

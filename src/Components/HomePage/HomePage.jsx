@@ -7,6 +7,7 @@ import Profile from "../Profil/Profile";
 import RequestDetails from "../RequestDetails/RequestDetails"
 import { Routes, Route } from 'react-router-dom';
 import MyRequests from "../MyRequests/MyRequests";
+import ClosedRequests from "../MyRequests/ClosedRequests";
 import Message from "../Message/Messages";
 
 
@@ -24,6 +25,7 @@ const HomePage = () => {
             <Route path="/Request/:id" element={<RequestDetails/>}></Route>
             <Route path="/messages" element={<Message/>}></Route>
             <Route path="/Requests"  element={<MyRequests/>}></Route>
+            <Route path="/transaction"  element={<ClosedRequests/>}></Route>
             
             
         </Routes>
